@@ -1,0 +1,36 @@
+{
+  "name": "movehub-async",
+  "version": "0.1.0",
+  "description": "Asynchronous wrapper for the Lego Boost Move Hub package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ttu/node-movehub-async.git"
+  },
+  "keywords": [
+    "Lego",
+    "Boost",
+    "Move",
+    "Hub",
+    "BLE",
+    "Bluetooth",
+    "Robotics",
+    "Async"
+  ],
+  "author": "Tomi Tuhkanen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ttu/node-movehub-async/issues"
+  },
+  "homepage": "https://github.com/ttu/node-movehub-async#readme",
+  "dependencies": {
+    "movehub": "^0.4.0"
+  },
+  "engines": {
+    "node": ">=7.6.0"
+  },
+  "engineStrict": true
+}
