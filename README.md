@@ -1,6 +1,14 @@
 # movehub async
 
+[![npm version](https://badge.fury.io/js/movehub-async.svg)](https://badge.fury.io/js/movehub-async)
+
 Asynchronous wrapper for [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub)
+
+## Install
+
+```sh
+$ npm install movehub-async
+```
 
 ## Usage
 
