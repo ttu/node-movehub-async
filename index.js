@@ -1,4 +1,4 @@
-const { Boost, Hub } = require('./movehub-async');
+const { Boost } = require('./movehub-async');
 
 const boost = new Boost();
 boost.afterInitialization();

@@ -1,39 +1,68 @@
 const { Boost, Hub } = require('movehub/movehub');
 
-const waitAsync = function(valueName, compareFunc = (valueName) => this[valueName], timeoutMs = 0) {
+const waitForValueToSet = function(valueName, compareFunc = (valueName) => this[valueName], timeoutMs = 0) {
   if (compareFunc.bind(this)(valueName)) return Promise.resolve(this[valueName]);
 
   return new Promise((resolve, reject) => {
-    setTimeout(async () => resolve(await waitAsync.bind(this)(valueName, compareFunc, timeoutMs)), timeoutMs + 100);
+    setTimeout(async () => resolve(await waitForValueToSet.bind(this)(valueName, compareFunc, timeoutMs)), timeoutMs + 100);
   });
 };
 
+/**
+ * Connect to Hub
+ * @method Hub#connectAsync
+ * @returns {Promise<boolean>} Hub connected status 
+ */
 Hub.prototype.connectAsync = function() {
-  return waitAsync.bind(this)('connected');
+  return waitForValueToSet.bind(this)('connected');
 };
 
+/**
+ * Disconnect Hub
+ * @method Hub#disconnectAsync
+ * @returns {Promise<boolean>} disconnection successful
+ */
 Hub.prototype.disconnectAsync = function() {
   this.disconnect();
-  return waitAsync.bind(this)('hubDisconnected');
+  return waitForValueToSet.bind(this)('hubDisconnected');
 };
 
+/**
+ * Execute this method after new instance of Hub is created
+ * @method Hub#afterInitialization
+ */
 Hub.prototype.afterInitialization = function() {
   this.hubDisconnected = null;
   this.on('disconnect', () => (this.hubDisconnected = true));  
 };
 
+/**
+ * Control the LED on the Move Hub
+ * @method Hub#ledAsync
+ * @param {boolean|number|string} color
+ * If set to boolean `false` the LED is switched off, if set to `true` the LED will be white.
+ * Possible string values: `off`, `pink`, `purple`, `blue`, `lightblue`, `cyan`, `green`, `yellow`, `orange`, `red`,
+ * `white`
+ * @returns {Promise}
+ */
 Hub.prototype.ledAsync = function(color) {
   return new Promise((resolve, reject) => {
     this.led(color, () => {
-      // Callback is executed faster than Boost has time to change the color
+      // Callback is executed when command is sent and it will
+      // take some time before MoveHub executes the command
       setTimeout(resolve, 250);
     });
   });
 }
 
+/**
+ * Get BLE status when BLE is ready to be used
+ * @method Boost#ble-ready
+ * @returns {Promise<boolean>} ble status `true`/`false` when ble is ready 
+ */
 Boost.prototype.bleReadyAsync = function() {
   return new Promise(async (resolve, reject) => {
-    var ready = await waitAsync.bind(this)('bleReadyStatus');
+    var ready = await waitForValueToSet.bind(this)('bleReadyStatus');
     if (ready) 
       resolve(ready);
     else 
@@ -41,10 +70,23 @@ Boost.prototype.bleReadyAsync = function() {
   });
 };
 
+/**
+ * Get Hub details when hub is found
+ * @method Boost#hubFoundAsync
+ * @returns {Promise<{uudi: string, address:string, localName: string}>} Hub details
+ */
 Boost.prototype.hubFoundAsync = function() {
-  return waitAsync.bind(this)('hubDetails');
+  return waitForValueToSet.bind(this)('hubDetails');
 };
 
+/**
+ * @method Boost#connectAsync
+ * @param hubDetails {object} MAC Address of the Hub
+ * @param hubDetails.uuid {string}
+ * @param hubDetails.address{string}
+ * @param hubDetails.localName {string}
+ * @returns {Promise<Hub>} Hub object 
+ */
 Boost.prototype.connectAsync = function(hubDetails) {
   return new Promise((resolve, reject) => {
     this.connect(hubDetails.address, (err, hub) => {
@@ -58,6 +100,10 @@ Boost.prototype.connectAsync = function(hubDetails) {
   });
 };
 
+/**
+ * Execute this method after new instance is created
+ * @method Boost#afterInitialization
+ */
 Boost.prototype.afterInitialization = function() {
   this.bleReadyStatus = null;
   this.hubDetails = null;

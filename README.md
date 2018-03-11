@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/movehub-async.svg)](https://badge.fury.io/js/movehub-async)
 
-Asynchronous wrapper for [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub)
+Asynchronous functions for the [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub)
 
 ## Install
 
@@ -13,7 +13,7 @@ $ npm install movehub-async
 ## Usage
 
 ```js
-const boost = require('./index');
+const boost = require('movehub-async');
 
 await boost.bleReadyAsync();
 const connectDetails = await boost.hubFoundAsync();
