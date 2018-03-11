@@ -33,3 +33,15 @@ await hub.ledAsync('green');
 ### Example project
 
 [lego-boost-ai](https://github.com/ttu/lego-boost-ai)
+
+## Changelog
+
+[Changelog](https://github.com/ttu/node-movehub-async/blob/master/CHANGELOG.md)
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+Licensed under the [MIT](https://github.com/ttu/node-movehub-async/blob/master/LICENSE) License.
