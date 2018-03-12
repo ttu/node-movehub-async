@@ -9,15 +9,6 @@ const waitForValueToSet = function(valueName, compareFunc = (valueName) => this[
 };
 
 /**
- * Connect to Hub
- * @method Hub#connectAsync
- * @returns {Promise<boolean>} Hub connected status 
- */
-Hub.prototype.connectAsync = function() {
-  return waitForValueToSet.bind(this)('connected');
-};
-
-/**
  * Disconnect Hub
  * @method Hub#disconnectAsync
  * @returns {Promise<boolean>} disconnection successful
@@ -89,15 +80,26 @@ Boost.prototype.hubFoundAsync = function() {
  */
 Boost.prototype.connectAsync = function(hubDetails) {
   return new Promise((resolve, reject) => {
-    this.connect(hubDetails.address, (err, hub) => {
+    this.connect(hubDetails.address, async (err, hub) => {
       if (err) {
         reject(err);
       } else {
         hub.afterInitialization();
+        await waitForValueToSet.bind(hub)('connected');
         resolve(hub);
       }
     });
   });
+};
+
+/**
+ * @method Boost#getHubAsync
+ * @returns {Promise<Hub>} Hub object 
+ */
+Boost.prototype.getHubAsync = async function() {
+    const bleRady = await this.bleReadyAsync();
+    const connectDetails = await this.hubFoundAsync();
+    return await this.connectAsync(connectDetails);
 };
 
 /**

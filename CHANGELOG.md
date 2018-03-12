@@ -1,8 +1,12 @@
 # Changelog
  
 ## [Unreleased]
- 
-- 
+
+-
+
+## [0.2.0] - 2018-03-12
+
+- Simple getHubAsync connection method
 
 ## [0.1.1] - 2018-03-11
  

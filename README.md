@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/movehub-async.svg)](https://badge.fury.io/js/movehub-async)
 
-Asynchronous functions for the [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub)
+Simple to use asynchronous functions for the [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub)
 
 ## Install
 
@@ -15,22 +15,44 @@ $ npm install movehub-async
 ```js
 const boost = require('movehub-async');
 
-await boost.bleReadyAsync();
-const connectDetails = await boost.hubFoundAsync();
-
-const hub = await boost.connectAsync(connectDetails);
-await hub.connectAsync();
+const hub = await boost.getHubAsync();
 
 await hub.ledAsync('red');
 await hub.ledAsync('yellow');
 await hub.ledAsync('green');
+
+hub.motorTimeMulti(10, 20, 20);
 ```
 
-### Tester
+## API
+
+Check non-async API definition from [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub)
+
+### - boost.getHubAsync()
+
+Create a connection to the Hub. Internally calls `bleReadyAsync`, `hubFoundAsync` and `connectAsync`.
+
+### - boost.bleReadyAsync()
+
+Wait for BLE device to be ready.
+
+### - boost.hubFoundAsync()
+
+Wait for MoveHub found event.
+
+### - boost.connectAsync(connectDetails)
+
+Initialize and wait for the connection to the Hub.
+
+### - hub.ledAsync(color)
+
+Control the LED on the Move Hub.
+
+## Tester
 
 [tester.js](https://github.com/ttu/node-movehub-async/blob/master/tester.js)
 
-### Example project
+## Example project
 
 [lego-boost-ai](https://github.com/ttu/lego-boost-ai)
 
