@@ -97,9 +97,9 @@ Boost.prototype.connectAsync = function(hubDetails) {
  * @returns {Promise<Hub>} Hub object 
  */
 Boost.prototype.getHubAsync = async function() {
-    const bleRady = await this.bleReadyAsync();
-    const connectDetails = await this.hubFoundAsync();
-    return await this.connectAsync(connectDetails);
+  await this.bleReadyAsync();
+  const connectDetails = await this.hubFoundAsync();
+  return await this.connectAsync(connectDetails);
 };
 
 /**
