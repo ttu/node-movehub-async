@@ -101,7 +101,7 @@ Hub.prototype.motorAngleAsync = function(port, angle, dutyCycle, wait = false) {
       // Callback is executed when command is sent and it will take some time before MoveHub executes the command
       if (wait) { 
         while(this.ports[port].angle != beforeTurn) {
-          let beforeTurn = this.ports[port].angle;
+          beforeTurn = this.ports[port].angle;
           await new Promise(res => setTimeout(res, CALLBACK_TIMEOUT_MS))
         }
       } else {
@@ -126,7 +126,7 @@ Hub.prototype.motorAngleMultiAsync = function(angle, dutyCycleA, dutyCycleB, wai
     let beforeTurnA = this.ports['A'].angle;
     let beforeTurnB = this.ports['B'].angle;
 
-    this.motorAngleMulti(angle, dutyCycleA, dutyCycleB, () => {
+    this.motorAngleMulti(angle, dutyCycleA, dutyCycleB, async () => {
       // Callback is executed when command is sent and it will take some time before MoveHub executes the command
       if (wait) { 
         while(this.ports['A'].angle != beforeTurnA && this.ports['B'].angle != beforeTurnB) {
