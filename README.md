@@ -21,12 +21,28 @@ await hub.ledAsync('red');
 await hub.ledAsync('yellow');
 await hub.ledAsync('green');
 
-hub.motorTimeMulti(10, 20, 20);
+await hub.motorTimeMultiAsync(10, 20, 20);
+await hub.motorAngleAsync('C', 45, 5);
 ```
 
+It is also possible to wait that motor execution has stopped
+
+```js
+await hub.ledAsync('red');
+// When light is red
+await hub.motorTimeMultiAsync(10, 20, 20, true);
+// 10 sec later
+await hub.motorTimeMultiAsync(5, 20, 20, true);
+// 5 sec later
+await hub.motorAngleAsync('C', 45, 50, true);
+// some time later
+await hub.ledAsync('green');
+```
 ## API
 
-Check non-async API definition from [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub)
+Check complete non-async API definition from [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub)
+
+Asynchronous version of the methods have _Async_ suffix in the name, e.g. `motorTimeMulti` -> `motorTimeMultiAsync`
 
 ### - boost.getHubAsync()
 
@@ -47,6 +63,26 @@ Initialize and wait for the connection to the Hub.
 ### - hub.ledAsync(color)
 
 Control the LED on the Move Hub.
+
+### - hub.ledAsync(color)
+
+Control the LED on the Move Hub.
+
+### - hub.motorTimeAsync(port, seconds, dutyCycle)
+
+Run a motor for specific time. Await returns when Hub starts to execute the command.
+
+### - hub.motorTimeMultiAsync(seconds, dutyCycleA, dutyCycleB)
+
+Run both motors (A and B) for specific time. Await returns when Hub starts to execute the command.
+
+### - hub.motorAngleAsync(port, angle, dutyCycle)
+
+Turn a motor by specific angle. Await returns when Hub starts to execute the command.
+
+### - hub.motorAngleMultiAsync(angle, dutyCycleA, dutyCycleB)
+
+Turn both motors (A and B) by specific angle. Await returns when Hub starts to execute the command.
 
 ## Tester
 

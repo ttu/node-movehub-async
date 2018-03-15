@@ -1,5 +1,7 @@
 const { Boost, Hub } = require('movehub/movehub');
 
+const CALLBACK_TIMEOUT_MS = 250;
+
 const waitForValueToSet = function(valueName, compareFunc = (valueName) => this[valueName], timeoutMs = 0) {
   if (compareFunc.bind(this)(valueName)) return Promise.resolve(this[valueName]);
 
@@ -39,13 +41,106 @@ Hub.prototype.afterInitialization = function() {
 Hub.prototype.ledAsync = function(color) {
   return new Promise((resolve, reject) => {
     this.led(color, () => {
-      // Callback is executed when command is sent and it will
-      // take some time before MoveHub executes the command
-      setTimeout(resolve, 250);
+      // Callback is executed when command is sent and it will take some time before MoveHub executes the command
+      setTimeout(resolve, CALLBACK_TIMEOUT_MS);
     });
   });
 }
 
+/**
+ * Run a motor for specific time
+ * @param {string|number} port possible string values: `A`, `B`, `AB`, `C`, `D`.
+ * @param {number} seconds
+ * @param {number} [dutyCycle=100] motor power percentage from `-100` to `100`. If a negative value is given rotation
+ * is counterclockwise.
+ * @param {boolean} [wait=false] will promise wait unitll motorTime run time has elapsed
+ * @returns {Promise}
+ */
+Hub.prototype.motorTimeAsync = function(port, seconds, dutyCycle = 100, wait = false) {
+  return new Promise((resolve, reject) => {
+    this.motorTime(port, seconds, dutyCycle, () => {
+      // Callback is executed when command is sent and it will take some time before MoveHub executes the command
+      setTimeout(resolve, wait ? CALLBACK_TIMEOUT_MS + seconds * 1000 : CALLBACK_TIMEOUT_MS);
+    });
+  });
+}
+
+/**
+ * Run both motors (A and B) for specific time
+ * @param {number} seconds
+ * @param {number} dutyCycleA motor power percentage from `-100` to `100`. If a negative value is given rotation
+ * is counterclockwise.
+ * @param {number} dutyCycleB motor power percentage from `-100` to `100`. If a negative value is given rotation
+ * is counterclockwise.
+ * @param {boolean} [wait=false] will promise wait unitll motorTime run time has elapsed
+ * @returns {Promise}
+ */
+Hub.prototype.motorTimeMultiAsync = function(seconds, dutyCycleA, dutyCycleB, wait = false) {
+  return new Promise((resolve, reject) => {
+    this.motorTimeMulti(seconds, dutyCycleA, dutyCycleB, () => {
+      // Callback is executed when command is sent and it will take some time before MoveHub executes the command
+      setTimeout(resolve, wait ? CALLBACK_TIMEOUT_MS + seconds * 1000 : CALLBACK_TIMEOUT_MS);
+    });
+  });
+}
+
+/**
+ * Turn a motor by specific angle
+ * @param {string|number} port possible string values: `A`, `B`, `AB`, `C`, `D`.
+ * @param {number} angle - degrees to turn from `0` to `2147483647`
+ * @param {number} [dutyCycle=100] motor power percentage from `-100` to `100`. If a negative value is given
+ * rotation is counterclockwise.
+ * @param {boolean} [wait=false] will promise wait unitll motorAngle has turned
+ * @returns {Promise}
+ */
+Hub.prototype.motorAngleAsync = function(port, angle, dutyCycle, wait = false) {
+  return new Promise((resolve, reject) => {
+    let beforeTurn = this.ports[port].angle;
+
+    this.motorAngle(port, angle, dutyCycle, async () => {
+      // Callback is executed when command is sent and it will take some time before MoveHub executes the command
+      if (wait) { 
+        while(this.ports[port].angle != beforeTurn) {
+          let beforeTurn = this.ports[port].angle;
+          await new Promise(res => setTimeout(res, CALLBACK_TIMEOUT_MS))
+        }
+      } else {
+        setTimeout(resolve, CALLBACK_TIMEOUT_MS);
+      }
+    });
+  });
+}
+
+/**
+ * Turn both motors (A and B) by specific angle
+ * @param {number} angle degrees to turn from `0` to `2147483647`
+ * @param {number} dutyCycleA motor power percentage from `-100` to `100`. If a negative value is given
+ * rotation is counterclockwise.
+ * @param {number} dutyCycleB motor power percentage from `-100` to `100`. If a negative value is given
+ * rotation is counterclockwise.
+ * @param {boolean} [wait=false] will promise wait unitll motorAngle has turned
+ * @returns {Promise}
+ */
+Hub.prototype.motorAngleMultiAsync = function(angle, dutyCycleA, dutyCycleB, wait = false) {
+  return new Promise((resolve, reject) => {
+    let beforeTurnA = this.ports['A'].angle;
+    let beforeTurnB = this.ports['B'].angle;
+
+    this.motorAngleMulti(angle, dutyCycleA, dutyCycleB, () => {
+      // Callback is executed when command is sent and it will take some time before MoveHub executes the command
+      if (wait) { 
+        while(this.ports['A'].angle != beforeTurnA && this.ports['B'].angle != beforeTurnB) {
+          beforeTurnA = this.ports['A'].angle;
+          beforeTurnB = this.ports['B'].angle;
+          await new Promise(res => setTimeout(res, CALLBACK_TIMEOUT_MS))
+        }
+      } else {
+        setTimeout(resolve, CALLBACK_TIMEOUT_MS);
+      }
+    });
+  });
+}
+  
 /**
  * Get BLE status when BLE is ready to be used
  * @method Boost#ble-ready

@@ -2,7 +2,7 @@
  
 ## [Unreleased]
 
--
+- motorTime and motorAngle async methods
 
 ## [0.2.0] - 2018-03-12
 
