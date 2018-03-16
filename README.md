@@ -38,59 +38,100 @@ await hub.motorAngleAsync('C', 45, 50, true);
 // some time later
 await hub.ledAsync('green');
 ```
+
 ## API
 
-Check complete non-async API definition from [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub)
-
-Asynchronous version of the methods have _Async_ suffix in the name, e.g. `motorTimeMulti` -> `motorTimeMultiAsync`
+Check complete non-async API definition from [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub). Asynchronous version of the method has an _Async_-suffix in the name, e.g. `motorTimeMulti` -> `motorTimeMultiAsync`.
 
 ### - boost.getHubAsync()
 
 Create a connection to the Hub. Internally calls `bleReadyAsync`, `hubFoundAsync` and `connectAsync`.
 
+```js
+const hub = await boost.getHubAsync();
+```
+
 ### - boost.bleReadyAsync()
 
 Wait for BLE device to be ready.
+
+```js
+await boost.bleReadyAsync();
+```
 
 ### - boost.hubFoundAsync()
 
 Wait for MoveHub found event.
 
+```js
+const connectDetails = await boost.hubFoundAsync();
+```
+
 ### - boost.connectAsync(connectDetails)
 
 Initialize and wait for the connection to the Hub.
 
+```js
+const hub = await boost.connectAsync(connectDetails);
+```
+
 ### - hub.ledAsync(color)
 
 Control the LED on the Move Hub.
 
-### - hub.ledAsync(color)
+```js
+await hub.ledAsync('red');
+```
 
-Control the LED on the Move Hub.
+### - hub.motorTimeAsync(port, seconds, dutyCycle = 100, wait = false)
 
-### - hub.motorTimeAsync(port, seconds, dutyCycle)
+Run a motor for specific time. Await returns when command is sent to Hub.
 
-Run a motor for specific time. Await returns when Hub starts to execute the command.
+```js
+await hub.motorTimeAsync('C', 5, 50);
+// continue almost immediately
 
-### - hub.motorTimeMultiAsync(seconds, dutyCycleA, dutyCycleB)
+await hub.motorTimeAsync('C', 5, 50, true);
+// continue 5 seconds later
+```
 
-Run both motors (A and B) for specific time. Await returns when Hub starts to execute the command.
+### - hub.motorTimeMultiAsync(seconds, dutyCycleA = 100, dutyCycleB = 100, wait = false)
 
-### - hub.motorAngleAsync(port, angle, dutyCycle)
+Run both motors (A and B) for specific time. Await returns when command is sent to Hub.
 
-Turn a motor by specific angle. Await returns when Hub starts to execute the command.
+```js
+// Drive forward for 10 seconds
+await hub.motorTimeMultiAsync(10, 20, 20);
+await hub.motorTimeMultiAsync(10, 20, 20, true);
+```
 
-### - hub.motorAngleMultiAsync(angle, dutyCycleA, dutyCycleB)
+### - hub.motorAngleAsync(port, angle, dutyCycle = 100, wait = false)
 
-Turn both motors (A and B) by specific angle. Await returns when Hub starts to execute the command.
+Turn a motor by specific angle. Await returns when command is sent to Hub.
+
+```js
+// Turn ~180 degrees  
+await hub.motorAngleAsync('B', 980, 100, true);
+// Continue after the turn
+```
+
+### - hub.motorAngleMultiAsync(angle, dutyCycleA = 100, dutyCycleB = 100, wait = false)
+
+Turn both motors (A and B) by specific angle. Await returns when command is sent to Hub.
+
+```js
+// Drive forward
+await hub.motorAngleMultiAsync(500, 100, 100);
+// Continue immediately after command is sent to the Hub
+```
+
+## Example project
+
+[lego-boost-ai](https://github.com/ttu/lego-boost-ai) has a simple AI and manual controls for Lego Boost.
 
 ## Tester
 
 [tester.js](https://github.com/ttu/node-movehub-async/blob/master/tester.js)
-
-## Example project
-
-[lego-boost-ai](https://github.com/ttu/lego-boost-ai)
 
 ## Changelog
 
