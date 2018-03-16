@@ -43,4 +43,14 @@ const boost = require('./index');
   await hub.ledAsync('red');
   await hub.ledAsync('yellow');
   await hub.ledAsync('green');
+
+  // Turn 180 degrees
+  await hub.motorAngleAsync('A', 980, 100, true);
+  
+  await hub.motorTimeMultiAsync(2, 100, 100, true);
+  
+  // Turn 180 degrees  
+  await hub.motorAngleAsync('B', 980, 100, true);
+  
+  await hub.ledAsync('red');  
 })();
