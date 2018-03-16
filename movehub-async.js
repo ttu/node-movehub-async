@@ -27,12 +27,12 @@ Hub.prototype.disconnectAsync = function() {
 Hub.prototype.afterInitialization = function() {
   this.hubDisconnected = null;
   this.ports = {
-    A: { action: '', angle: 0 },
-    B: { action: '', angle: 0 },
-    AB: { action: '', angle: 0 },
-    C: { action: '', angle: 0 },
-    D: { action: '', angle: 0 },
-    LED: { action: '', angle: 0 },
+    A: { angle: 0 },
+    B: { angle: 0 },
+    AB: { angle: 0 },
+    C: { angle: 0 },
+    D: { angle: 0 },
+    LED: { angle: 0 }
   };
 
   this.on('rotation', rotation => this.ports[rotation.port].angle = rotation.angle);
@@ -103,9 +103,9 @@ Hub.prototype.motorTimeMultiAsync = function(seconds, dutyCycleA = 100, dutyCycl
  */
 Hub.prototype.motorAngleAsync = function(port, angle, dutyCycle = 100, wait = false) {
   return new Promise((resolve, reject) => {
-    let beforeTurn = this.ports[port].angle;
     this.motorAngle(port, angle, dutyCycle, async () => {
       if (wait) {
+        let beforeTurn;
         do {
           beforeTurn = this.ports[port].angle;                    
           await new Promise(res => setTimeout(res, CALLBACK_TIMEOUT_MS))
@@ -130,9 +130,9 @@ Hub.prototype.motorAngleAsync = function(port, angle, dutyCycle = 100, wait = fa
  */
 Hub.prototype.motorAngleMultiAsync = function(angle, dutyCycleA, dutyCycleB, wait = false) {
   return new Promise((resolve, reject) => {
-    let beforeTurn = this.ports['AB'].angle;
     this.motorAngleMulti(angle, dutyCycleA, dutyCycleB, async () => {
-      if (wait) { 
+      if (wait) {
+        let beforeTurn;
         do {
           beforeTurn = this.ports['AB'].angle;                    
           await new Promise(res => setTimeout(res, CALLBACK_TIMEOUT_MS))
@@ -192,6 +192,7 @@ Boost.prototype.connectAsync = function(hubDetails) {
 };
 
 /**
+ * Connect to a MoveHub and get Hub instance
  * @method Boost#getHubAsync
  * @returns {Promise<Hub>} Hub object 
  */

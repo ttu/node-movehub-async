@@ -4,6 +4,11 @@
 
 -
 
+## [0.3.1] - 2018-03-16
+
+- Fix motorAngle wait
+- Update JSDocs
+
 ## [0.3.0] - 2018-03-16
 
 - Asynchronous motor functions
