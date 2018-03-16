@@ -22,21 +22,22 @@ await hub.ledAsync('yellow');
 await hub.ledAsync('green');
 
 await hub.motorTimeMultiAsync(10, 20, 20);
-await hub.motorAngleAsync('C', 45, 5);
+await hub.motorAngleAsync('C', 600, 5);
 ```
 
 It is also possible to wait that motor execution has stopped
 
 ```js
 await hub.ledAsync('red');
-// When light is red
+// Continue when led is red
 await hub.motorTimeMultiAsync(10, 20, 20, true);
-// 10 sec later
+// Continue 10 sec later
 await hub.motorTimeMultiAsync(5, 20, 20, true);
-// 5 sec later
-await hub.motorAngleAsync('C', 45, 50, true);
-// some time later
+// Continue 5 sec later
+await hub.motorAngleAsync('C', 800, 50, true);
+// Continue some time later
 await hub.ledAsync('green');
+// Continue when led is green
 ```
 
 ## API
@@ -89,10 +90,10 @@ Run a motor for specific time. Await returns when command is sent to Hub.
 
 ```js
 await hub.motorTimeAsync('C', 5, 50);
-// continue almost immediately
+// Continue almost immediately when command is sent to Hub
 
 await hub.motorTimeAsync('C', 5, 50, true);
-// continue 5 seconds later
+// Continue 5 seconds later
 ```
 
 ### - hub.motorTimeMultiAsync(seconds, dutyCycleA = 100, dutyCycleB = 100, wait = false)
@@ -101,8 +102,8 @@ Run both motors (A and B) for specific time. Await returns when command is sent 
 
 ```js
 // Drive forward for 10 seconds
-await hub.motorTimeMultiAsync(10, 20, 20);
 await hub.motorTimeMultiAsync(10, 20, 20, true);
+// Continue 10 seconds later
 ```
 
 ### - hub.motorAngleAsync(port, angle, dutyCycle = 100, wait = false)
@@ -122,7 +123,7 @@ Turn both motors (A and B) by specific angle. Await returns when command is sent
 ```js
 // Drive forward
 await hub.motorAngleMultiAsync(500, 100, 100);
-// Continue immediately after command is sent to the Hub
+// Continue immediately after command is sent to Hub
 ```
 
 ## Example project
