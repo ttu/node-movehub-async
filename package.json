@@ -1,6 +1,6 @@
 {
   "name": "movehub-async",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Asynchronous functions for the Lego Boost Move Hub package",
   "main": "index.js",
   "scripts": {
