@@ -4,8 +4,11 @@
 
 Simple to use asynchronous functions for the [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub)
 
-## Install
+## Setup
 
+* Install [Noble prerequisites](https://github.com/noble/noble#prerequisites)
+
+* Install movehub-async
 ```sh
 $ npm install movehub-async
 ```

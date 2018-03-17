@@ -4,6 +4,15 @@
 
 -
 
+## [0.3.3] - 2018-03-17
+
+- motor function dutyCycle default values
+- Update JSDocs
+
+## [0.3.2] - 2018-03-16
+
+- npm README update
+
 ## [0.3.1] - 2018-03-16
 
 - Fix motorAngle wait

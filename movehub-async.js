@@ -59,6 +59,7 @@ Hub.prototype.ledAsync = function(color) {
 
 /**
  * Run a motor for specific time
+ * @method Hub#motorTimeAsync
  * @param {string|number} port possible string values: `A`, `B`, `AB`, `C`, `D`.
  * @param {number} seconds
  * @param {number} [dutyCycle=100] motor power percentage from `-100` to `100`. If a negative value is given rotation
@@ -76,10 +77,11 @@ Hub.prototype.motorTimeAsync = function(port, seconds, dutyCycle = 100, wait = f
 
 /**
  * Run both motors (A and B) for specific time
+ * @method Hub#motorTimeMultiAsync
  * @param {number} seconds
- * @param {number} dutyCycleA motor power percentage from `-100` to `100`. If a negative value is given rotation
+ * @param {number} [dutyCycleA=100] motor power percentage from `-100` to `100`. If a negative value is given rotation
  * is counterclockwise.
- * @param {number} dutyCycleB motor power percentage from `-100` to `100`. If a negative value is given rotation
+ * @param {number} [dutyCycleB=100] motor power percentage from `-100` to `100`. If a negative value is given rotation
  * is counterclockwise.
  * @param {boolean} [wait=false] will promise wait unitll motorTime run time has elapsed
  * @returns {Promise}
@@ -94,6 +96,7 @@ Hub.prototype.motorTimeMultiAsync = function(seconds, dutyCycleA = 100, dutyCycl
 
 /**
  * Turn a motor by specific angle
+ * @method Hub#motorAngleAsync 
  * @param {string|number} port possible string values: `A`, `B`, `AB`, `C`, `D`.
  * @param {number} angle - degrees to turn from `0` to `2147483647`
  * @param {number} [dutyCycle=100] motor power percentage from `-100` to `100`. If a negative value is given
@@ -120,15 +123,16 @@ Hub.prototype.motorAngleAsync = function(port, angle, dutyCycle = 100, wait = fa
 
 /**
  * Turn both motors (A and B) by specific angle
+ * @method Hub#motorAngleMultiAsync 
  * @param {number} angle degrees to turn from `0` to `2147483647`
- * @param {number} dutyCycleA motor power percentage from `-100` to `100`. If a negative value is given
+ * @param {number} [dutyCycleA=100] motor power percentage from `-100` to `100`. If a negative value is given
  * rotation is counterclockwise.
- * @param {number} dutyCycleB motor power percentage from `-100` to `100`. If a negative value is given
+ * @param {number} [dutyCycleB=100] motor power percentage from `-100` to `100`. If a negative value is given
  * rotation is counterclockwise.
  * @param {boolean} [wait=false] will promise wait unitll motorAngle has turned
  * @returns {Promise}
  */
-Hub.prototype.motorAngleMultiAsync = function(angle, dutyCycleA, dutyCycleB, wait = false) {
+Hub.prototype.motorAngleMultiAsync = function(angle, dutyCycleA = 100, dutyCycleB = 100, wait = false) {
   return new Promise((resolve, reject) => {
     this.motorAngleMulti(angle, dutyCycleA, dutyCycleB, async () => {
       if (wait) {
@@ -147,7 +151,7 @@ Hub.prototype.motorAngleMultiAsync = function(angle, dutyCycleA, dutyCycleB, wai
   
 /**
  * Get BLE status when BLE is ready to be used
- * @method Boost#ble-ready
+ * @method Boost#bleReadyAsync
  * @returns {Promise<boolean>} ble status `true`/`false` when ble is ready 
  */
 Boost.prototype.bleReadyAsync = function() {
