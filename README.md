@@ -20,11 +20,14 @@ const boost = require('movehub-async');
 
 const hub = await boost.getHubAsync();
 
+// Turn light from red to green
 await hub.ledAsync('red');
 await hub.ledAsync('yellow');
 await hub.ledAsync('green');
 
+// Turn A & B motors for 10 seconds with power 20
 await hub.motorTimeMultiAsync(10, 20, 20);
+// Turn motor C 600 degrees with power 5
 await hub.motorAngleAsync('C', 600, 5);
 ```
 
@@ -41,6 +44,19 @@ await hub.motorAngleAsync('C', 800, 50, true);
 // Continue some time later
 await hub.ledAsync('green');
 // Continue when led is green
+```
+
+Package contains also simple functions to drive for specified distances and turn specified angles
+
+```js
+// Drive 2 meters forward
+await hub.drive(200, true);
+// After 2 meter drive, turn 90 degrees to the right
+await hub.turn(90, true);
+// Drive 1 meter backwards
+await hub.drive(-100, true);
+// Turn 180 degrees to the left
+await hub.turn(-180, true); 
 ```
 
 ## API
@@ -129,6 +145,69 @@ await hub.motorAngleMultiAsync(500, 100, 100);
 // Continue immediately after command is sent to Hub
 ```
 
+### - hub.drive(centimeters, wait = false)
+
+Drive specified distance.
+
+__Note:__ This is implemented with Lego Boost Vernie
+
+```js
+// Drive forward 2 meters
+await hub.drive(200, true);
+// Continue after drive is finished
+```
+
+### - hub.useMetricUnits()
+
+Use metric untis in e.g. drive method. Metric is default.
+
+```js
+// Drive forward 200 cm
+await hub.drive(200, true);
+
+hub.useImperialUnits();
+
+// Drive forward 200 inches
+await hub.drive(200, true);
+```
+
+### - hub.useImperialUnits()
+
+Use imperial units.
+
+### - hub.setFrictionModifier(modifier)
+
+If drive method's distance is not correct, friction modifier can be changed.
+
+```js
+// Drive forward 100cm
+await hub.drive(100, true);
+
+// Distance was only 90cm, update modifier
+hub.setFrictionModifier(1.1);
+
+// Drive 100cm
+await hub.drive(100, true);
+```
+
+### - hub.turn(degrees, wait = false)
+
+__Note:__ This is implemented with Lego Boost Vernie
+
+```js
+const hub = await boost.getHubAsync();
+// Drive 1 meter square
+await hub.drive(100, true);
+await hub.turn(90, true);
+await hub.drive(100, true);
+await hub.turn(90, true);
+await hub.drive(100, true);
+await hub.turn(90, true);
+await hub.drive(100, true);
+await hub.turn(90, true);
+
+```
+
 ## Example project
 
 [lego-boost-ai](https://github.com/ttu/lego-boost-ai) has a simple AI and manual controls for Lego Boost.
@@ -136,6 +215,14 @@ await hub.motorAngleMultiAsync(500, 100, 100);
 ## Tester
 
 [tester.js](https://github.com/ttu/node-movehub-async/blob/master/tester.js)
+
+## Use development version
+
+It is possible to use development version from GitHub, which may contain unreleased features.
+
+```sh
+$ npm install git+https://git@github.com/ttu/node-movehub-async.git
+```
 
 ## Changelog
 

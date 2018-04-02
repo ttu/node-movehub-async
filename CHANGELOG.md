@@ -2,11 +2,12 @@
  
 ## [Unreleased]
 
--
+- drive-function for driving specified distance
+- turn-function for turning specified angle
 
 ## [0.3.3] - 2018-03-17
 
-- motor function dutyCycle default values
+- motor-function dutyCycle default values
 - Update JSDocs
 
 ## [0.3.2] - 2018-03-16

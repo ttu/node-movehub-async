@@ -1,6 +1,11 @@
 const { Boost, Hub } = require('movehub/movehub');
 
-const CALLBACK_TIMEOUT_MS = 250;
+const CALLBACK_TIMEOUT_MS = 1000 / 3;
+const METRIC_MODIFIER = 28.5;
+const IMPERIAL_MODIFIER = METRIC_MODIFIER / 4;
+const TURN_MODIFIER = 2.56;
+const DRIVE_SPEED = 25;
+const TURN_SPEED = 20;
 
 const waitForValueToSet = function(valueName, compareFunc = (valueName) => this[valueName], timeoutMs = 0) {
   if (compareFunc.bind(this)(valueName)) return Promise.resolve(this[valueName]);
@@ -35,8 +40,11 @@ Hub.prototype.afterInitialization = function() {
     LED: { angle: 0 }
   };
 
+  this.useMetric = true;
+  this.modifier = 1;
+
   this.on('rotation', rotation => this.ports[rotation.port].angle = rotation.angle);
-  this.on('disconnect', () => (this.hubDisconnected = true));  
+  this.on('disconnect', () => (this.hubDisconnected = true));
 };
 
 /**
@@ -96,7 +104,7 @@ Hub.prototype.motorTimeMultiAsync = function(seconds, dutyCycleA = 100, dutyCycl
 
 /**
  * Turn a motor by specific angle
- * @method Hub#motorAngleAsync 
+ * @method Hub#motorAngleAsync
  * @param {string|number} port possible string values: `A`, `B`, `AB`, `C`, `D`.
  * @param {number} angle - degrees to turn from `0` to `2147483647`
  * @param {number} [dutyCycle=100] motor power percentage from `-100` to `100`. If a negative value is given
@@ -110,7 +118,7 @@ Hub.prototype.motorAngleAsync = function(port, angle, dutyCycle = 100, wait = fa
       if (wait) {
         let beforeTurn;
         do {
-          beforeTurn = this.ports[port].angle;                    
+          beforeTurn = this.ports[port].angle;
           await new Promise(res => setTimeout(res, CALLBACK_TIMEOUT_MS))
         } while(this.ports[port].angle != beforeTurn)
         resolve();
@@ -123,7 +131,7 @@ Hub.prototype.motorAngleAsync = function(port, angle, dutyCycle = 100, wait = fa
 
 /**
  * Turn both motors (A and B) by specific angle
- * @method Hub#motorAngleMultiAsync 
+ * @method Hub#motorAngleMultiAsync
  * @param {number} angle degrees to turn from `0` to `2147483647`
  * @param {number} [dutyCycleA=100] motor power percentage from `-100` to `100`. If a negative value is given
  * rotation is counterclockwise.
@@ -138,7 +146,7 @@ Hub.prototype.motorAngleMultiAsync = function(angle, dutyCycleA = 100, dutyCycle
       if (wait) {
         let beforeTurn;
         do {
-          beforeTurn = this.ports['AB'].angle;                    
+          beforeTurn = this.ports['AB'].angle;
           await new Promise(res => setTimeout(res, CALLBACK_TIMEOUT_MS))
         } while(this.ports['AB'].angle != beforeTurn)
         resolve();
@@ -148,16 +156,67 @@ Hub.prototype.motorAngleMultiAsync = function(angle, dutyCycleA = 100, dutyCycle
     });
   });
 }
-  
+
+/**
+ * Use metric units (default)
+ * @method Hub#useMetricUnits
+ */
+Hub.prototype.useMetricUnits = function() {
+  this.useMetric = true;
+}
+
+/**
+ * Use imperial units
+ * @method Hub#useImperialUnits
+ */
+Hub.prototype.useImperialUnits = function() {
+  this.useMetric = false;
+}
+
+/**
+ * Set friction modifier
+ * @method Hub#setFrictionModifier
+ * @param {number} modifier friction modifier
+ */
+Hub.prototype.setFrictionModifier = function(modifier) {
+  this.modifier = modifier;
+}
+
+/**
+ * Drive specified distance
+ * @method Hub#drive 
+ * @param {number} distance distance in centimeters (default) or inches. Positive is forward and negative is backward.
+ * @param {boolean} [wait=false] will promise wait unitll drive has completed.
+ */
+Hub.prototype.drive = function(distance, wait = false) {
+  const angle = Math.abs(distance) * ((this.useMetric ? METRIC_MODIFIER : IMPERIAL_MODIFIER) * this.modifier);
+  const dutyCycleA = DRIVE_SPEED * (distance > 0 ? 1 : -1);
+  const dutyCycleB = DRIVE_SPEED * (distance > 0 ? 1 : -1);
+  return this.motorAngleMultiAsync(angle, dutyCycleA, dutyCycleB, wait);
+}
+
+/**
+ * Turn robot specified degrees
+ * @method Hub#turn 
+ * @param {number} degrees degrees to turn. Negative is to the left and positive to the right.
+ * @param {boolea} [wait=false] will promise wait unitll turn has completed.
+ */
+Hub.prototype.turn = function(degrees, wait = false) {
+  const angle = Math.abs(degrees) * TURN_MODIFIER;
+  const dutyCycleA = TURN_SPEED * (degrees > 0 ? 1 : -1);
+  const dutyCycleB = TURN_SPEED * (degrees > 0 ? -1 : 1);
+  return this.motorAngleMultiAsync(angle, dutyCycleA, dutyCycleB, wait);
+}
+
 /**
  * Get BLE status when BLE is ready to be used
  * @method Boost#bleReadyAsync
- * @returns {Promise<boolean>} ble status `true`/`false` when ble is ready 
+ * @returns {Promise<boolean>} ble status `true`/`false` when ble is ready
  */
 Boost.prototype.bleReadyAsync = function() {
   return new Promise(async (resolve, reject) => {
     var ready = await waitForValueToSet.bind(this)('bleReadyStatus');
-    if (ready) 
+    if (ready)
       resolve(ready);
     else 
       reject(ready);
@@ -179,7 +238,7 @@ Boost.prototype.hubFoundAsync = function() {
  * @param hubDetails.uuid {string}
  * @param hubDetails.address{string}
  * @param hubDetails.localName {string}
- * @returns {Promise<Hub>} Hub object 
+ * @returns {Promise<Hub>} Hub object
  */
 Boost.prototype.connectAsync = function(hubDetails) {
   return new Promise((resolve, reject) => {
