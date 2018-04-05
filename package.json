@@ -1,7 +1,7 @@
 {
   "name": "movehub-async",
   "version": "0.3.3",
-  "description": "Asynchronous functions for the Lego Boost Move Hub package",
+  "description": "Asynchronous methods for the Lego Boost Move Hub package",
   "main": "index.js",
   "scripts": {
     "test": "npm run eslint",

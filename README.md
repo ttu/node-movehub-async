@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/movehub-async.svg)](https://badge.fury.io/js/movehub-async)
 
-Simple to use asynchronous functions for the [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub)
+Simple to use asynchronous methods for the [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub)
 
 ## Setup
 
@@ -46,17 +46,17 @@ await hub.ledAsync('green');
 // Continue when led is green
 ```
 
-Package contains also simple functions to drive for specified distances and turn specified angles
+Package contains also simple methods to drive for a specified distance and turn a specified angle. By default drive and turn methods will wait the execution has stopped.
 
 ```js
 // Drive 2 meters forward
-await hub.drive(200, true);
+await hub.drive(200);
 // After 2 meter drive, turn 90 degrees to the right
-await hub.turn(90, true);
+await hub.turn(90);
 // Drive 1 meter backwards
-await hub.drive(-100, true);
+await hub.drive(-100);
 // Turn 180 degrees to the left
-await hub.turn(-180, true); 
+await hub.turn(-180); 
 ```
 
 ## API
@@ -145,35 +145,35 @@ await hub.motorAngleMultiAsync(500, 100, 100);
 // Continue immediately after command is sent to Hub
 ```
 
-### - hub.drive(centimeters, wait = false)
+### - hub.drive(centimeters, wait = true)
 
-Drive specified distance.
+Drive specified distance. By default drive-method's return promise will resolve when the distance has been driven.
 
 __Note:__ This is implemented with Lego Boost Vernie
 
 ```js
 // Drive forward 2 meters
-await hub.drive(200, true);
+await hub.drive(200);
 // Continue after drive is finished
 ```
 
 ### - hub.useMetricUnits()
 
-Use metric untis in e.g. drive method. Metric is default.
+Use metric untis in drive-method. Metric is default.
 
 ```js
 // Drive forward 200 cm
-await hub.drive(200, true);
+await hub.drive(200);
 
 hub.useImperialUnits();
 
 // Drive forward 200 inches
-await hub.drive(200, true);
+await hub.drive(200);
 ```
 
 ### - hub.useImperialUnits()
 
-Use imperial units.
+Use imperial units with drive-method.
 
 ### - hub.setFrictionModifier(modifier)
 
@@ -181,31 +181,32 @@ If drive method's distance is not correct, friction modifier can be changed.
 
 ```js
 // Drive forward 100cm
-await hub.drive(100, true);
+await hub.drive(100);
 
 // Distance was only 90cm, update modifier
 hub.setFrictionModifier(1.1);
 
 // Drive 100cm
-await hub.drive(100, true);
+await hub.drive(100);
 ```
 
-### - hub.turn(degrees, wait = false)
+### - hub.turn(degrees, wait = true)
+
+Turn specified angle to either right (positive number) or left (negative number). By default turn-method's promise will resolve when the angle has been turned.
 
 __Note:__ This is implemented with Lego Boost Vernie
 
 ```js
 const hub = await boost.getHubAsync();
 // Drive 1 meter square
-await hub.drive(100, true);
-await hub.turn(90, true);
-await hub.drive(100, true);
-await hub.turn(90, true);
-await hub.drive(100, true);
-await hub.turn(90, true);
-await hub.drive(100, true);
-await hub.turn(90, true);
-
+await hub.drive(100);
+await hub.turn(90);
+await hub.drive(100);
+await hub.turn(90);
+await hub.drive(100);
+await hub.turn(90);
+await hub.drive(100);
+await hub.turn(90);
 ```
 
 ## Example project

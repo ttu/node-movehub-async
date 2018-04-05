@@ -2,12 +2,12 @@
  
 ## [Unreleased]
 
-- drive-function for driving specified distance
-- turn-function for turning specified angle
+- Add drive method for driving specified distance
+- Add turn method for turning specified angle
 
 ## [0.3.3] - 2018-03-17
 
-- motor-function dutyCycle default values
+- Add dutyCycle default values to motor methods
 - Update JSDocs
 
 ## [0.3.2] - 2018-03-16
@@ -21,7 +21,7 @@
 
 ## [0.3.0] - 2018-03-16
 
-- Asynchronous motor functions
+- Asynchronous motor methods
 
 ## [0.2.0] - 2018-03-12
 
@@ -34,4 +34,4 @@
 ## [0.1.0] - 2018-03-10
  
 - Functions for connection creation
-- Led control function
+- Led control method

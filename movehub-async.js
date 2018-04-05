@@ -186,9 +186,10 @@ Hub.prototype.setFrictionModifier = function(modifier) {
  * Drive specified distance
  * @method Hub#drive 
  * @param {number} distance distance in centimeters (default) or inches. Positive is forward and negative is backward.
- * @param {boolean} [wait=false] will promise wait unitll drive has completed.
+ * @param {boolean} [wait=true] will promise wait untill the drive has completed.
+ * @returns {Promise}
  */
-Hub.prototype.drive = function(distance, wait = false) {
+Hub.prototype.drive = function(distance, wait = true) {
   const angle = Math.abs(distance) * ((this.useMetric ? METRIC_MODIFIER : IMPERIAL_MODIFIER) * this.modifier);
   const dutyCycleA = DRIVE_SPEED * (distance > 0 ? 1 : -1);
   const dutyCycleB = DRIVE_SPEED * (distance > 0 ? 1 : -1);
@@ -199,9 +200,10 @@ Hub.prototype.drive = function(distance, wait = false) {
  * Turn robot specified degrees
  * @method Hub#turn 
  * @param {number} degrees degrees to turn. Negative is to the left and positive to the right.
- * @param {boolea} [wait=false] will promise wait unitll turn has completed.
+ * @param {boolean} [wait=true] will promise wait untill the turn has completed.
+ * @returns {Promise}
  */
-Hub.prototype.turn = function(degrees, wait = false) {
+Hub.prototype.turn = function(degrees, wait = true) {
   const angle = Math.abs(degrees) * TURN_MODIFIER;
   const dutyCycleA = TURN_SPEED * (degrees > 0 ? 1 : -1);
   const dutyCycleB = TURN_SPEED * (degrees > 0 ? -1 : 1);
