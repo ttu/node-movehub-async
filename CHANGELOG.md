@@ -2,6 +2,9 @@
  
 ## [Unreleased]
 
+
+## [0.4.0] - 2018-04-07
+
 - Add drive method for driving specified distance
 - Add turn method for turning specified angle
 
