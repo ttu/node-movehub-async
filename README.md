@@ -9,6 +9,7 @@ Simple to use asynchronous methods for the [Lego Boost Move Hub](https://github.
 * Install [Noble prerequisites](https://github.com/noble/noble#prerequisites)
 
 * Install movehub-async
+
 ```sh
 $ npm install movehub-async
 ```
@@ -63,7 +64,9 @@ await hub.turn(-180);
 
 Check complete non-async API definition from [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub). Asynchronous version of the method has an _Async_-suffix in the name, e.g. `motorTimeMulti` -> `motorTimeMultiAsync`.
 
-### - boost.getHubAsync()
+## Boost
+
+### boost.getHubAsync()
 
 Create a connection to the Hub. Internally calls `bleReadyAsync`, `hubFoundAsync` and `connectAsync`.
 
@@ -71,7 +74,7 @@ Create a connection to the Hub. Internally calls `bleReadyAsync`, `hubFoundAsync
 const hub = await boost.getHubAsync();
 ```
 
-### - boost.bleReadyAsync()
+### boost.bleReadyAsync()
 
 Wait for BLE device to be ready.
 
@@ -79,7 +82,7 @@ Wait for BLE device to be ready.
 await boost.bleReadyAsync();
 ```
 
-### - boost.hubFoundAsync()
+### boost.hubFoundAsync()
 
 Wait for MoveHub found event.
 
@@ -87,7 +90,7 @@ Wait for MoveHub found event.
 const connectDetails = await boost.hubFoundAsync();
 ```
 
-### - boost.connectAsync(connectDetails)
+### boost.connectAsync(connectDetails)
 
 Initialize and wait for the connection to the Hub.
 
@@ -95,7 +98,9 @@ Initialize and wait for the connection to the Hub.
 const hub = await boost.connectAsync(connectDetails);
 ```
 
-### - hub.ledAsync(color)
+## Hub
+
+### hub.ledAsync(color)
 
 Control the LED on the Move Hub.
 
@@ -103,7 +108,7 @@ Control the LED on the Move Hub.
 await hub.ledAsync('red');
 ```
 
-### - hub.motorTimeAsync(port, seconds, dutyCycle = 100, wait = false)
+### hub.motorTimeAsync(port, seconds, dutyCycle = 100, wait = false)
 
 Run a motor for specific time. Await returns when command is sent to Hub.
 
@@ -115,7 +120,7 @@ await hub.motorTimeAsync('C', 5, 50, true);
 // Continue 5 seconds later
 ```
 
-### - hub.motorTimeMultiAsync(seconds, dutyCycleA = 100, dutyCycleB = 100, wait = false)
+### hub.motorTimeMultiAsync(seconds, dutyCycleA = 100, dutyCycleB = 100, wait = false)
 
 Run both motors (A and B) for specific time. Await returns when command is sent to Hub.
 
@@ -125,7 +130,7 @@ await hub.motorTimeMultiAsync(10, 20, 20, true);
 // Continue 10 seconds later
 ```
 
-### - hub.motorAngleAsync(port, angle, dutyCycle = 100, wait = false)
+### hub.motorAngleAsync(port, angle, dutyCycle = 100, wait = false)
 
 Turn a motor by specific angle. Await returns when command is sent to Hub.
 
@@ -135,7 +140,7 @@ await hub.motorAngleAsync('B', 980, 100, true);
 // Continue after the turn
 ```
 
-### - hub.motorAngleMultiAsync(angle, dutyCycleA = 100, dutyCycleB = 100, wait = false)
+### hub.motorAngleMultiAsync(angle, dutyCycleA = 100, dutyCycleB = 100, wait = false)
 
 Turn both motors (A and B) by specific angle. Await returns when command is sent to Hub.
 
@@ -145,11 +150,11 @@ await hub.motorAngleMultiAsync(500, 100, 100);
 // Continue immediately after command is sent to Hub
 ```
 
-### - hub.drive(centimeters, wait = true)
+### hub.drive(centimeters, wait = true)
 
 Drive specified distance. By default drive-method's return promise will resolve when the distance has been driven.
 
-__Note:__ This is implemented with Lego Boost Vernie
+__Note:__ Drive method is implemented with Lego Boost Vernie
 
 ```js
 // Drive forward 2 meters
@@ -157,7 +162,7 @@ await hub.drive(200);
 // Continue after drive is finished
 ```
 
-### - hub.useMetricUnits()
+### hub.useMetricUnits()
 
 Use metric untis in drive-method. Metric is default.
 
@@ -171,11 +176,11 @@ hub.useImperialUnits();
 await hub.drive(200);
 ```
 
-### - hub.useImperialUnits()
+### hub.useImperialUnits()
 
 Use imperial units with drive-method.
 
-### - hub.setFrictionModifier(modifier)
+### hub.setFrictionModifier(modifier)
 
 If drive method's distance is not correct, friction modifier can be changed.
 
@@ -190,11 +195,11 @@ hub.setFrictionModifier(1.1);
 await hub.drive(100);
 ```
 
-### - hub.turn(degrees, wait = true)
+### hub.turn(degrees, wait = true)
 
 Turn specified angle to either right (positive number) or left (negative number). By default turn-method's promise will resolve when the angle has been turned.
 
-__Note:__ This is implemented with Lego Boost Vernie
+__Note:__ Turn method is implemented with Lego Boost Vernie
 
 ```js
 const hub = await boost.getHubAsync();
@@ -207,6 +212,27 @@ await hub.drive(100);
 await hub.turn(90);
 await hub.drive(100);
 await hub.turn(90);
+```
+
+### hub.driveUntil(distance = 0, wait = true)
+
+Drive until the sensor shows an object in defined distance. The distance sensor is not very sensitive or accurate. By default the bot will stop when the sensor notices a wall for the first time. Sensor distance values are usualy between 110-50.
+
+```js
+await hub.driveUntil();
+```
+
+### hub.turnUntil(direction = 1, wait = true)
+
+Turn until sensor doesn't detect any blocking object. 1 or any positive number turns to the right (default) and 0 or any negative number turns to the left.
+
+```js
+// Turn to the right
+await hub.turnUntil();
+// Turn to the right
+await hub.turnUntil(1);
+// Turn to the left
+await hub.turnUntil(0);
 ```
 
 ## Example project

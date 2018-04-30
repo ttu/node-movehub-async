@@ -6,6 +6,8 @@ const IMPERIAL_MODIFIER = METRIC_MODIFIER / 4;
 const TURN_MODIFIER = 2.56;
 const DRIVE_SPEED = 25;
 const TURN_SPEED = 20;
+const DEFAULT_STOP_DISTANCE = 105;
+const DEFAULT_CLEAR_DISTANCE = 120;
 
 const waitForValueToSet = function(valueName, compareFunc = (valueName) => this[valueName], timeoutMs = 0) {
   if (compareFunc.bind(this)(valueName)) return Promise.resolve(this[valueName]);
@@ -39,12 +41,12 @@ Hub.prototype.afterInitialization = function() {
     D: { angle: 0 },
     LED: { angle: 0 }
   };
-
   this.useMetric = true;
   this.modifier = 1;
 
   this.on('rotation', rotation => this.ports[rotation.port].angle = rotation.angle);
-  this.on('disconnect', () => (this.hubDisconnected = true));
+  this.on('disconnect', () => this.hubDisconnected = true);
+  this.on('distance', distance => this.distance = distance);
 };
 
 /**
@@ -120,7 +122,7 @@ Hub.prototype.motorAngleAsync = function(port, angle, dutyCycle = 100, wait = fa
         do {
           beforeTurn = this.ports[port].angle;
           await new Promise(res => setTimeout(res, CALLBACK_TIMEOUT_MS))
-        } while(this.ports[port].angle != beforeTurn)
+        } while(this.ports[port].angle !== beforeTurn)
         resolve();
       } else {
         setTimeout(resolve, CALLBACK_TIMEOUT_MS);
@@ -148,7 +150,7 @@ Hub.prototype.motorAngleMultiAsync = function(angle, dutyCycleA = 100, dutyCycle
         do {
           beforeTurn = this.ports['AB'].angle;
           await new Promise(res => setTimeout(res, CALLBACK_TIMEOUT_MS))
-        } while(this.ports['AB'].angle != beforeTurn)
+        } while(this.ports['AB'].angle !== beforeTurn)
         resolve();
       } else {
         setTimeout(resolve, CALLBACK_TIMEOUT_MS);
@@ -208,6 +210,45 @@ Hub.prototype.turn = function(degrees, wait = true) {
   const dutyCycleA = TURN_SPEED * (degrees > 0 ? 1 : -1);
   const dutyCycleB = TURN_SPEED * (degrees > 0 ? -1 : 1);
   return this.motorAngleMultiAsync(angle, dutyCycleA, dutyCycleB, wait);
+}
+
+/**
+ * Drive untill sensor shows object in defined distance
+ * @method Hub#driveUntil 
+ * @param {number} [distance=0] distance in centimeters (default) or inches when to stop. Distance sensor is not very sensitive or accurate.
+ * By default will stop when sensor notices wall for the first time. Sensor distance values are usualy between 110-50.
+ * @param {boolean} [wait=true] will promise wait untill the bot will stop.
+ * @returns {Promise}
+ */
+Hub.prototype.driveUntil = async function(distance = 0, wait = true) {
+  const distanceCheck = distance !== 0 ? (this.useMetric ? distance : distance * 2.54) : DEFAULT_STOP_DISTANCE;
+  this.motorTimeMulti(60, DRIVE_SPEED, DRIVE_SPEED);
+  if (wait) {
+    await waitForValueToSet.bind(this)('distance', () => distanceCheck >= this.distance);
+    await this.motorAngleMultiAsync(0);
+  }
+  else {
+    return waitForValueToSet.bind(this)('distance', () => distanceCheck >= this.distance).then(_ => this.motorAngleMulti(0, 0, 0));
+  }
+}
+
+/**
+ * Turn until there is no object in sensors sight
+ * @method Hub#turnUntil 
+ * @param {number} [direction=1] direction to turn to. 1 (or any positive) is to the right and 0 (or any negative) is to the left.
+ * @param {boolean} [wait=true] will promise wait untill the bot will stop.
+ * @returns {Promise}
+ */
+Hub.prototype.turnUntil = async function(direction = 1, wait = true) {
+  const directionModifier = direction > 0 ? 1 : -1;
+  this.turn(360 * directionModifier, false);
+  if (wait) {
+    await waitForValueToSet.bind(this)('distance', () => this.distance >= DEFAULT_CLEAR_DISTANCE);
+    await this.turn(0, false)  
+  }
+  else {
+    return waitForValueToSet.bind(this)('distance', () => this.distance >= DEFAULT_CLEAR_DISTANCE).then(_ => this.turn(0, false));
+  }
 }
 
 /**

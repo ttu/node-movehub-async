@@ -2,6 +2,8 @@
  
 ## [Unreleased]
 
+- Drive until method
+- Turn until method
 
 ## [0.4.0] - 2018-04-07
 
