@@ -20,6 +20,7 @@
     "no-unused-vars": [1, {"args": "none"}],
     "constructor-super": "warn",
     "valid-typeof": "warn",
-    "indent": ["error", 2]
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "quotes": ["error", "single"]
   }
 }
