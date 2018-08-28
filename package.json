@@ -28,10 +28,10 @@
   },
   "homepage": "https://github.com/ttu/node-movehub-async#readme",
   "dependencies": {
-    "movehub": "^0.4.0"
+    "movehub": "^0.4.1"
   },
   "devDependencies": {
-    "eslint": "^4.19.1"
+    "eslint": "^5.4.0"
   },
   "engines": {
     "node": ">=7.6.0"
