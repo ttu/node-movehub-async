@@ -277,10 +277,10 @@ Boost.prototype.hubFoundAsync = function() {
 
 /**
  * @method Boost#connectAsync
- * @param hubDetails {object} MAC Address of the Hub
- * @param hubDetails.uuid {string}
- * @param hubDetails.address{string}
- * @param hubDetails.localName {string}
+ * @param {object} hubDetails MAC Address of the Hub
+ * @param {string} hubDetails.uuid
+ * @param {string} hubDetails.address
+ * @param {string} hubDetails.localName
  * @returns {Promise<Hub>} Hub object
  */
 Boost.prototype.connectAsync = function(hubDetails) {
