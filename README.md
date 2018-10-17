@@ -2,7 +2,9 @@
 
 [![npm version](https://badge.fury.io/js/movehub-async.svg)](https://badge.fury.io/js/movehub-async)
 
-Simple to use asynchronous methods for the [Lego Boost Move Hub](https://github.com/hobbyquaker/node-movehub)
+Simple to use asynchronous methods for the [Move Hub](https://github.com/hobbyquaker/node-movehub)
+
+_Move Hub is central controller block of [LEGO® Boost Robotics Set](https://www.lego.com/en-us/boost)._
 
 ## Setup
 
@@ -258,6 +260,12 @@ $ npm install git+https://git@github.com/ttu/node-movehub-async.git
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## Disclaimer
+
+LEGO and BOOST are Trademarks from The LEGO Company, which do not support this project. 
+
+I'm not responsible for any damage on your LEGO BOOST devices - use it at your own risk.
 
 ## License
 
