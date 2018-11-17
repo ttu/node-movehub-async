@@ -17,6 +17,21 @@ const waitForValueToSet = function(valueName, compareFunc = (valueName) => this[
   });
 };
 
+const defaultConfiguration = { left: 'B', right: 'A' };
+
+const validateConfiguration = function(motorConfiguration){
+  const validMotors = ['A', 'B'];
+
+  if (!validMotors.includes(motorConfiguration.left))
+    throw Error('Define left port port correctly');
+
+  if (!validMotors.includes(motorConfiguration.right))
+    throw Error('Define right port port correctly');
+
+  if (motorConfiguration.left === motorConfiguration.right)
+    throw Error('left and right motor can not be same');
+}
+
 /**
  * Disconnect Hub
  * @method Hub#disconnectAsync
@@ -193,8 +208,8 @@ Hub.prototype.setFrictionModifier = function(modifier) {
  */
 Hub.prototype.drive = function(distance, wait = true) {
   const angle = Math.abs(distance) * ((this.useMetric ? METRIC_MODIFIER : IMPERIAL_MODIFIER) * this.modifier);
-  const dutyCycleA = DRIVE_SPEED * (distance > 0 ? 1 : -1);
-  const dutyCycleB = DRIVE_SPEED * (distance > 0 ? 1 : -1);
+  const dutyCycleA = DRIVE_SPEED * (distance > 0 ? 1 : -1) * (this.configuration.left === 'A' ? 1 : -1);
+  const dutyCycleB = DRIVE_SPEED * (distance > 0 ? 1 : -1) * (this.configuration.left === 'A' ? 1 : -1);
   return this.motorAngleMultiAsync(angle, dutyCycleA, dutyCycleB, wait);
 }
 
@@ -207,8 +222,10 @@ Hub.prototype.drive = function(distance, wait = true) {
  */
 Hub.prototype.turn = function(degrees, wait = true) {
   const angle = Math.abs(degrees) * TURN_MODIFIER;
-  const dutyCycleA = TURN_SPEED * (degrees > 0 ? 1 : -1);
-  const dutyCycleB = TURN_SPEED * (degrees > 0 ? -1 : 1);
+  const leftTurn = TURN_SPEED * (degrees > 0 ? 1 : -1);
+  const rightTurn = TURN_SPEED * (degrees > 0 ? -1 : 1);
+  const dutyCycleA = this.configuration.left === 'A' ? leftTurn : rightTurn;
+  const dutyCycleB = this.configuration.left === 'B' ? rightTurn : leftTurn;
   return this.motorAngleMultiAsync(angle, dutyCycleA, dutyCycleB, wait);
 }
 
@@ -300,9 +317,13 @@ Boost.prototype.connectAsync = function(hubDetails) {
 /**
  * Connect to a MoveHub and get Hub instance
  * @method Boost#getHubAsync
+ * @param {object} [configuration = defaultConfiguration] Boost device's engine configuration
  * @returns {Promise<Hub>} Hub object 
  */
-Boost.prototype.getHubAsync = async function() {
+Boost.prototype.getHubAsync = async function(configuration = defaultConfiguration) {
+  this.configuration = configuration;
+  validateConfiguration(this.configuration);
+  
   await this.bleReadyAsync();
   const connectDetails = await this.hubFoundAsync();
   return await this.connectAsync(connectDetails);
@@ -318,6 +339,14 @@ Boost.prototype.afterInitialization = function() {
 
   this.on('ble-ready', status => (this.bleReadyStatus = status));
   this.on('hub-found', hubDetails => (this.hubDetails = hubDetails));
+};
+
+/**
+ * Hub motor configuration for car and Vernie mode
+ */
+Boost.prototype.motorConfig = {
+  car: { left: 'B', right : 'A' },
+  vernie : { left: 'A', right : 'B' }
 };
 
 module.exports.Boost = Boost;

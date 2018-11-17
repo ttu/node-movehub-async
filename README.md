@@ -76,6 +76,15 @@ Create a connection to the Hub. Internally calls `bleReadyAsync`, `hubFoundAsync
 const hub = await boost.getHubAsync();
 ```
 
+XXXX
+
+```js
+const config = { left: 'B', right: 'A' };
+const hub = await boost.getHubAsync(config);
+```
+
+Vernie's left engine is 'B' and right 'A'. Car's left engine is 'A' and right 'B'.
+
 ### boost.bleReadyAsync()
 
 Wait for BLE device to be ready.
