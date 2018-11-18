@@ -4,8 +4,9 @@
   "description": "Asynchronous methods for the Lego Boost Move Hub package",
   "main": "index.js",
   "scripts": {
-    "test": "npm run eslint",
-    "eslint": "eslint index.js movehub-async.js tester.js"
+    "test": "npm run eslint && npm run mocha",
+    "mocha": "mocha",
+    "eslint": "eslint index.js movehub-async.js tester.js ./test/test.js"
   },
   "repository": {
     "type": "git",
@@ -31,7 +32,10 @@
     "movehub": "^0.4.1"
   },
   "devDependencies": {
-    "eslint": "^5.4.0"
+    "eslint": "^5.4.0",
+    "mocha": "^5.2.0",
+    "mockery": "^2.1.0",
+    "sinon": "^7.1.1"
   },
   "engines": {
     "node": ">=7.6.0"
