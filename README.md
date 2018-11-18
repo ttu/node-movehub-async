@@ -241,6 +241,20 @@ await hub.turnUntil(0);
 
 [lego-boost-ai](https://github.com/ttu/lego-boost-ai) has a simple AI and manual controls for Lego Boost.
 
+## Unit tests
+
+Run ESLint and Mocha tests.
+
+```sh
+$ npm run test
+```
+
+Run only Mocha tests.
+
+```sh
+$ npm run mocha
+```
+
 ## Tester
 
 [tester.js](https://github.com/ttu/node-movehub-async/blob/master/tester.js)
