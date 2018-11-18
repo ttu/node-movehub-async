@@ -83,7 +83,12 @@ const config = { left: 'B', right: 'A' };
 const hub = await boost.getHubAsync(config);
 ```
 
-Vernie's left engine is 'B' and right 'A'. Car's left engine is 'A' and right 'B'.
+Vernie's left engine is 'A' and right 'B'. Car's left engine is 'B' and right 'A'. Boost has motorConfig-object with car and vernie configurations.
+
+```js
+const carConfig = boost.motorConfig.car; // { left: 'B', right: 'A' }
+const vernieConfig = boost.motorConfig.vernie; // { left: 'A', right: 'B' }
+```
 
 ### boost.bleReadyAsync()
 
@@ -101,12 +106,15 @@ Wait for MoveHub found event.
 const connectDetails = await boost.hubFoundAsync();
 ```
 
-### boost.connectAsync(connectDetails)
+### boost.connectAsync(connectDetails, motorConfig = defaultConfig)
 
 Initialize and wait for the connection to the Hub.
 
 ```js
 const hub = await boost.connectAsync(connectDetails);
+
+// connectAsync has an optional motorConfiguration
+const hub = await boost.connectAsync(connectDetails, boost.motorConfig.car);
 ```
 
 ## Hub

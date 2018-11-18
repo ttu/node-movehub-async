@@ -29,7 +29,7 @@ const validateConfiguration = function(motorConfiguration){
     throw Error('Define right port port correctly');
 
   if (motorConfiguration.left === motorConfiguration.right)
-    throw Error('left and right motor can not be same');
+    throw Error('Left and right motor can not be same');
 }
 
 /**
@@ -45,8 +45,12 @@ Hub.prototype.disconnectAsync = function() {
 /**
  * Execute this method after new instance of Hub is created
  * @method Hub#afterInitialization
+ * @param {object} [configuration = defaultConfiguration] Boost device's engine configuration
  */
-Hub.prototype.afterInitialization = function() {
+Hub.prototype.afterInitialization = function(configuration = defaultConfiguration) {
+  validateConfiguration(configuration);
+  this.configuration = configuration;
+  
   this.hubDisconnected = null;
   this.ports = {
     A: { angle: 0 },
@@ -225,7 +229,7 @@ Hub.prototype.turn = function(degrees, wait = true) {
   const leftTurn = TURN_SPEED * (degrees > 0 ? 1 : -1);
   const rightTurn = TURN_SPEED * (degrees > 0 ? -1 : 1);
   const dutyCycleA = this.configuration.left === 'A' ? leftTurn : rightTurn;
-  const dutyCycleB = this.configuration.left === 'B' ? rightTurn : leftTurn;
+  const dutyCycleB = this.configuration.left === 'A' ? rightTurn : leftTurn;
   return this.motorAngleMultiAsync(angle, dutyCycleA, dutyCycleB, wait);
 }
 
@@ -298,15 +302,16 @@ Boost.prototype.hubFoundAsync = function() {
  * @param {string} hubDetails.uuid
  * @param {string} hubDetails.address
  * @param {string} hubDetails.localName
+ * @param {object} [configuration = defaultConfiguration] Boost device's engine configuration
  * @returns {Promise<Hub>} Hub object
  */
-Boost.prototype.connectAsync = function(hubDetails) {
+Boost.prototype.connectAsync = function(hubDetails, configuration) {
   return new Promise((resolve, reject) => {
     this.connect(hubDetails.address, async (err, hub) => {
       if (err) {
         reject(err);
       } else {
-        hub.afterInitialization();
+        hub.afterInitialization(configuration);
         await waitForValueToSet.bind(hub)('connected');
         resolve(hub);
       }
@@ -321,12 +326,11 @@ Boost.prototype.connectAsync = function(hubDetails) {
  * @returns {Promise<Hub>} Hub object 
  */
 Boost.prototype.getHubAsync = async function(configuration = defaultConfiguration) {
-  this.configuration = configuration;
-  validateConfiguration(this.configuration);
+  validateConfiguration(configuration);
   
   await this.bleReadyAsync();
   const connectDetails = await this.hubFoundAsync();
-  return await this.connectAsync(connectDetails);
+  return await this.connectAsync(connectDetails, configuration);
 };
 
 /**
