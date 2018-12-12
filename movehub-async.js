@@ -33,7 +33,7 @@ Hub.prototype.disconnectAsync = function() {
  */
 Hub.prototype.afterInitialization = function() {
   this.hubDisconnected = null;
-  this.ports = {
+  this.portData = {
     A: { angle: 0 },
     B: { angle: 0 },
     AB: { angle: 0 },
@@ -44,7 +44,7 @@ Hub.prototype.afterInitialization = function() {
   this.useMetric = true;
   this.modifier = 1;
 
-  this.on('rotation', rotation => this.ports[rotation.port].angle = rotation.angle);
+  this.on('rotation', rotation => this.portData[rotation.port].angle = rotation.angle);
   this.on('disconnect', () => this.hubDisconnected = true);
   this.on('distance', distance => this.distance = distance);
 };
@@ -120,9 +120,9 @@ Hub.prototype.motorAngleAsync = function(port, angle, dutyCycle = 100, wait = fa
       if (wait) {
         let beforeTurn;
         do {
-          beforeTurn = this.ports[port].angle;
+          beforeTurn = this.portData[port].angle;
           await new Promise(res => setTimeout(res, CALLBACK_TIMEOUT_MS))
-        } while(this.ports[port].angle !== beforeTurn)
+        } while(this.portData[port].angle !== beforeTurn)
         resolve();
       } else {
         setTimeout(resolve, CALLBACK_TIMEOUT_MS);
@@ -148,9 +148,9 @@ Hub.prototype.motorAngleMultiAsync = function(angle, dutyCycleA = 100, dutyCycle
       if (wait) {
         let beforeTurn;
         do {
-          beforeTurn = this.ports['AB'].angle;
+          beforeTurn = this.portData['AB'].angle;
           await new Promise(res => setTimeout(res, CALLBACK_TIMEOUT_MS))
-        } while(this.ports['AB'].angle !== beforeTurn)
+        } while(this.portData['AB'].angle !== beforeTurn)
         resolve();
       } else {
         setTimeout(resolve, CALLBACK_TIMEOUT_MS);
