@@ -76,18 +76,23 @@ Create a connection to the Hub. Internally calls `bleReadyAsync`, `hubFoundAsync
 const hub = await boost.getHubAsync();
 ```
 
-XXXX
+#### Motor configuration
+
+Vernie's left motor is 'A' and right 'B'. Car's left motor is 'B' and right 'A'. By default `getHubAsync` will use Vernie's configuration.
 
 ```js
-const config = { left: 'B', right: 'A' };
+// These both use same the configuration
+const hub = await boost.getHubAsync();
+
+const config = { left: 'A', right: 'B' };
 const hub = await boost.getHubAsync(config);
 ```
 
-Vernie's left engine is 'A' and right 'B'. Car's left engine is 'B' and right 'A'. Boost has motorConfig-object with car and vernie configurations.
+Boost has `motorConfig`-object with car and vernie configurations.
 
 ```js
-const carConfig = boost.motorConfig.car; // { left: 'B', right: 'A' }
 const vernieConfig = boost.motorConfig.vernie; // { left: 'A', right: 'B' }
+const carConfig = boost.motorConfig.car; // { left: 'B', right: 'A' }
 ```
 
 ### boost.bleReadyAsync()
