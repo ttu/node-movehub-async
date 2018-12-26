@@ -37,13 +37,43 @@ describe('Hub', function() {
       assert.equal(hub.useMetric, false);
     });
   });
+
+  describe('#afterInitialization', function() {
+    it('correct configuration AB', function() {
+      const hub = new Hub();
+      hub.afterInitialization({ left: 'A', right: 'B'});
+    });
+    it('correct configuration BA', function() {
+      const hub = new Hub();
+      hub.afterInitialization({ left: 'B', right: 'A'});
+    });
+    it('invalid configuration AA', function() {
+      const hub = new Hub();
+      assert.throws(() => hub.afterInitialization({ left: 'A', right: 'A'}), Error);
+    });
+    it('invalid configuration BB', function() {
+      const hub = new Hub();
+      assert.throws(() => hub.afterInitialization({ left: 'B', right: 'B'}), Error);
+    });
+    it('invalid configuration CB', function() {
+      const hub = new Hub();
+      assert.throws(() => hub.afterInitialization({ left: 'C', right: 'B'}), Error);
+    });
+    it('invalid configuration AC', function() {
+      const hub = new Hub();
+      assert.throws(() => hub.afterInitialization({ left: 'A', right: 'C'}), Error);
+    });
+  });
+
   describe('#drive', function() {
-    it('correct values to motorAngleMultiAsync', function() {
+    it('correct values to motorAngleMultiAsync (motor AB)', function() {
       let values = [];
       Hub.prototype.motorAngleMultiAsync = (...rest) => values = [ ...rest ];
 
+      const config = new Boost().motorConfig.vernie;
+
       const hub = new Hub();
-      hub.afterInitialization();
+      hub.afterInitialization(config);
 
       hub.drive(100);
       assert.equal(values[0], 2850);
@@ -51,19 +81,52 @@ describe('Hub', function() {
       assert.equal(values[2], 25);
       assert.equal(values[3], true);
     });
-  });
-  describe('#turn', function() {
-    it('correct values to motorAngleMultiAsync', function() {
+    it('correct values to motorAngleMultiAsync (motor BA)', function() {
       let values = [];
       Hub.prototype.motorAngleMultiAsync = (...rest) => values = [ ...rest ];
 
+      const config = new Boost().motorConfig.car;
+
       const hub = new Hub();
-      hub.afterInitialization();
+      hub.afterInitialization(config);
+
+      hub.drive(100);
+      assert.equal(values[0], 2850);
+      assert.equal(values[1], -25);
+      assert.equal(values[2], -25);
+      assert.equal(values[3], true);
+    });
+  });
+
+  describe('#turn', function() {
+    it('correct values to motorAngleMultiAsync (motor AB)', async function() {
+      let values = [];
+      Hub.prototype.motorAngleMultiAsync = (...rest) => values = [ ...rest ];
+
+      const config = new Boost().motorConfig.vernie;
+
+      const hub = new Hub();
+      hub.afterInitialization(config);
 
       hub.turn(90);
       assert.equal(values[0], 230.4);
       assert.equal(values[1], 20);
       assert.equal(values[2], -20);
+      assert.equal(values[3], true);
+    });
+    it('correct values to motorAngleMultiAsync (motor BA)', async function() {
+      let values = [];
+      Hub.prototype.motorAngleMultiAsync = (...rest) => values = [ ...rest ];
+
+      const config = new Boost().motorConfig.car;
+
+      const hub = new Hub();
+      hub.afterInitialization(config);
+
+      hub.turn(90);
+      assert.equal(values[0], 230.4);
+      assert.equal(values[1], -20);
+      assert.equal(values[2], 20);
       assert.equal(values[3], true);
     });
   });

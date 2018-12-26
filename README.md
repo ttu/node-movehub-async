@@ -76,6 +76,25 @@ Create a connection to the Hub. Internally calls `bleReadyAsync`, `hubFoundAsync
 const hub = await boost.getHubAsync();
 ```
 
+#### Motor configuration
+
+Vernie's left motor is 'A' and right 'B'. Car's left motor is 'B' and right 'A'. By default `getHubAsync` will use Vernie's configuration.
+
+```js
+// These both use same the configuration
+const hub = await boost.getHubAsync();
+
+const config = { left: 'A', right: 'B' };
+const hub = await boost.getHubAsync(config);
+```
+
+Boost has `motorConfig`-object with car and vernie configurations.
+
+```js
+const vernieConfig = boost.motorConfig.vernie; // { left: 'A', right: 'B' }
+const carConfig = boost.motorConfig.car; // { left: 'B', right: 'A' }
+```
+
 ### boost.bleReadyAsync()
 
 Wait for BLE device to be ready.
@@ -92,12 +111,15 @@ Wait for MoveHub found event.
 const connectDetails = await boost.hubFoundAsync();
 ```
 
-### boost.connectAsync(connectDetails)
+### boost.connectAsync(connectDetails, motorConfig = defaultConfig)
 
 Initialize and wait for the connection to the Hub.
 
 ```js
 const hub = await boost.connectAsync(connectDetails);
+
+// connectAsync has an optional motorConfiguration
+const hub = await boost.connectAsync(connectDetails, boost.motorConfig.car);
 ```
 
 ## Hub
